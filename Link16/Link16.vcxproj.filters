@@ -18,10 +18,22 @@
     <ClCompile Include="Link16.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="handler.cpp">
+    <ClCompile Include="tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="tools.cpp">
+    <ClCompile Include="dataType.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InitialWord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtendWord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ContinueWord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Header35.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +41,19 @@
     <ClInclude Include="dataType.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="handler.h">
+    <ClInclude Include="tools.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="tools.h">
+    <ClInclude Include="InitialWord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendWord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ContinueWord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Header35.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,11 @@
 #include <string>
 #include <bitset>
 #include "dataType.h"
+#include "tools.h"
+#include "InitialWord.h"
+#include "ExtendWord.h"
+#include "ContinueWord.h"
+#include "Header35.h"
 
 using namespace std;
 
@@ -58,91 +63,87 @@ string BitStrTostr(const string& str) {
     return res;
 }
 
-void BIP() {
+void BIP(Header35 header35, InitialWord iword, 
+    ExtendWord eword, ContinueWord cword) {
     cout << "执行奇偶校验......" << endl;
+    iword.setBIP(bitset<5>("01001"));
 }
 
-void weave() {
+void weave(symbol* symbol_RS_header, symbol* symbol_RS_iword,
+    symbol* symbol_RS_eword, symbol* symbol_RS_cword) {
     cout << "执行字符交织......" << endl;
-}
-
-//生成J系列消息的35bit报头
-header_35 generate_J_header(bitset<15> STN) {
-    header_35 Jheader = { 0 };
-    Jheader.type = bitset<3>("001");
-    Jheader.PR = bitset<1>(0);
-    Jheader.STN = STN;
-    Jheader.SDU = bitset<16>("0000100010001001");    //一种加密方式
-    return Jheader;
-}
-
-symbol* word_to_symbol(initial_word bit_word) {
-    symbol* symbol_words = new symbol[15];
-    string temp = { 0 };
-    temp = bit_word.format.to_string() + bit_word.signal.to_string() + bit_word.sub_signal.to_string()
-        + bit_word.length.to_string() + bit_word.message.to_string() + bit_word.BIP.to_string();
-
-    int flag = 0;
-    for (int i = 0; i < 15; i++) {
-        symbol_words[i] = symbol(temp.substr(flag, 5));
-        flag += 5;
-    }
-    return symbol_words;
-}
-
-symbol* word_to_symbol(extend_word bit_word) {
-    symbol* symbol_words = new symbol[15];
-    string temp = { 0 };
-    temp = bit_word.format.to_string() + bit_word.message.to_string() + bit_word.BIP.to_string();
-
-    int flag = 0;
-    for (int i = 0; i < 15; i++) {
-        symbol_words[i] = symbol(temp.substr(flag, 5));
-        flag += 5;
-    }
-    return symbol_words;
-}
-
-symbol* word_to_symbol(continue_word bit_word) {
-    symbol* symbol_words = new symbol[15];
-    string temp = { 0 };
-    temp = bit_word.format.to_string() + bit_word.signal.to_string() + bit_word.message.to_string() 
-        + bit_word.BIP.to_string();
-
-    int flag = 0;
-    for (int i = 0; i < 15; i++) {
-        symbol_words[i] = symbol(temp.substr(flag, 5));
-        flag += 5;
-    }
-    return symbol_words;
-}
-
-symbol* header_to_symbol(header_35 bit_word) {
-    symbol* symbol_header = new symbol[7];
-    string temp = { 0 };
-    temp = bit_word.type.to_string() + bit_word.PR.to_string() + bit_word.STN.to_string()
-        + bit_word.SDU.to_string();
-
-    for (int i = 0; i < 7; i++) {
-        int flag = 0;
-        symbol_header[i] = symbol(temp.substr(flag, 5));
-        flag += 5;
-    }
-    return symbol_header;
 }
 
 //15Symbol->31Symbol
 //用RS纠错编码处理消息字，默认在消息字后填充长度为16Symlbol的0数据单元
 symbol* RS15_31(symbol* symbol_word) {
+    cout << "======" << "开始执行RS纠错编码" << "======" << endl;
+    int i = 0;
     symbol* symbol_RS_word = new symbol[31]();
     memcpy(symbol_RS_word, symbol_word, sizeof(symbol) * 15);
+    while (i != 31) {
+        cout << "symbol_RS_word[" << i << "] = " << symbol_RS_word[i].to_string() << endl;
+        i++;
+    }
     return symbol_RS_word;
 }
 
 //7Symbol->16Symbol
 //用RS纠错编码处理消息头，默认在消息字后填充长度为9Symlbol的0数据单元
 symbol* RS7_16(symbol* symbol_header) {
+    cout << "======" << "开始执行RS纠错编码" << "======" << endl;
+    int i = 0;
     symbol* symbol_RS_header = new symbol[16]();
     memcpy(symbol_RS_header, symbol_header, sizeof(symbol) * 7);
+    while (i != 16) {
+        cout << "symbol_RS_header[" << i << "] = " << symbol_RS_header[i].to_string() << endl;
+        i++;
+    }
     return symbol_RS_header;
+}
+
+void handlerSTDP(Header35& Jheader, InitialWord& iword,
+    ExtendWord& eword, ContinueWord& cword) {
+    //执行奇偶校验，70bit -> 75bit
+    BIP(Jheader, iword, eword, cword);
+    //消息加密 TODO:
+
+    //Symbol转换，然后进行RS编码
+    symbol* symbol_header = Jheader.to_symbol();
+    symbol* symbol_RS_header = RS7_16(symbol_header);
+
+    symbol* symbol_iword = iword.to_symbol();
+    symbol* symbol_RS_iword = RS15_31(symbol_iword);
+
+    symbol* symbol_eword = eword.to_symbol();
+    symbol* symbol_RS_eword = RS15_31(symbol_eword);
+
+    symbol* symbol_cword = cword.to_symbol();
+    symbol* symbol_RS_cword = RS15_31(symbol_cword);
+
+    //交织
+    weave(symbol_RS_header, symbol_RS_iword, symbol_RS_eword, symbol_RS_cword);
+
+    //发送
+    send_msg("一个STDP消息");
+
+    delete(symbol_header);
+    symbol_header = nullptr;
+    delete(symbol_RS_header);
+    symbol_RS_header = nullptr;
+
+    delete(symbol_iword);
+    symbol_iword = nullptr;
+    delete(symbol_RS_iword);
+    symbol_RS_iword = nullptr;
+
+    delete(symbol_eword);
+    symbol_eword = nullptr;
+    delete(symbol_RS_eword);
+    symbol_RS_eword = nullptr;
+
+    delete(symbol_cword);
+    symbol_cword = nullptr;
+    delete(symbol_RS_cword);
+    symbol_RS_cword = nullptr;
 }

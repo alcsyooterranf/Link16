@@ -127,13 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="handler.cpp" />
+    <ClCompile Include="ContinueWord.cpp" />
+    <ClCompile Include="dataType.cpp" />
+    <ClCompile Include="ExtendWord.cpp" />
+    <ClCompile Include="Header35.cpp" />
+    <ClCompile Include="InitialWord.cpp" />
     <ClCompile Include="Link16.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ContinueWord.h" />
     <ClInclude Include="dataType.h" />
-    <ClInclude Include="handler.h" />
+    <ClInclude Include="ExtendWord.h" />
+    <ClInclude Include="Header35.h" />
+    <ClInclude Include="InitialWord.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
