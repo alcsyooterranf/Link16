@@ -40,12 +40,12 @@ void InitialWord::handler_initial_word(string& bit_data) {
         string temp = bit_data.substr(0, 57);
         bit_data.erase(0, 57);
         message = bitset<57>(temp);
-        len = 57;
     }
 
     //m_signal = bitset<5>();
     //m_sub_signal = bitset<3>();
-    //m_length = bitset<3>();
+    //STDP封装标准，初始字后只跟两个字，一个扩展字和一个继续字
+    m_length = bitset<3>(0b010);
     m_message = message;
 }
 
@@ -63,6 +63,11 @@ void InitialWord::show() {
 string InitialWord::toString_70bit() {
     return m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string()
         + m_length.to_string() + m_message.to_string();
+}
+
+string InitialWord::toString() {
+    return m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string()
+        + m_length.to_string() + m_message.to_string() + m_BIP.to_string();
 }
 
 void InitialWord::setBIP(bitset<5> BIP) {

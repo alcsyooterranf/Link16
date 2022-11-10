@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="ContinueWord.cpp" />
     <ClCompile Include="dataType.cpp" />
+    <ClCompile Include="decodeTools.cpp" />
     <ClCompile Include="ExtendWord.cpp" />
     <ClCompile Include="Header35.cpp" />
     <ClCompile Include="InitialWord.cpp" />
@@ -138,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="ContinueWord.h" />
     <ClInclude Include="dataType.h" />
+    <ClInclude Include="decodeTools.h" />
     <ClInclude Include="ExtendWord.h" />
     <ClInclude Include="Header35.h" />
     <ClInclude Include="InitialWord.h" />

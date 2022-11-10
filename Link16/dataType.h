@@ -12,4 +12,4 @@ typedef unsigned short		uint16_t;	//16位无符号整数
 typedef unsigned int		uint32_t;	//32位无符号整数
 typedef unsigned long long	uint64_t;	//64位无符号整数
 
-typedef bitset<5>	symbol;		//5bit = 1Symbol
+typedef bitset<5>	symbol;		//5bit = 1Symbol, 注意sizeof(symbol) = 4

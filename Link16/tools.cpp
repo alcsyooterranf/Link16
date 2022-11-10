@@ -63,8 +63,8 @@ string BitStrTostr(const string& str) {
     return res;
 }
 
-void BIP(Header35 header35, InitialWord iword, 
-    ExtendWord eword, ContinueWord cword) {
+void BIP(Header35& header35, InitialWord& iword, 
+    ExtendWord& eword, ContinueWord& cword) {
     cout << "执行奇偶校验......" << endl;
     iword.setBIP(bitset<5>("01001"));
 }
@@ -80,6 +80,7 @@ symbol* RS15_31(symbol* symbol_word) {
     cout << "======" << "开始执行RS纠错编码" << "======" << endl;
     int i = 0;
     symbol* symbol_RS_word = new symbol[31]();
+    memset(symbol_RS_word, 0, sizeof(symbol) * 31);
     memcpy(symbol_RS_word, symbol_word, sizeof(symbol) * 15);
     while (i != 31) {
         cout << "symbol_RS_word[" << i << "] = " << symbol_RS_word[i].to_string() << endl;
@@ -94,6 +95,7 @@ symbol* RS7_16(symbol* symbol_header) {
     cout << "======" << "开始执行RS纠错编码" << "======" << endl;
     int i = 0;
     symbol* symbol_RS_header = new symbol[16]();
+    memset(symbol_RS_header, 0, sizeof(symbol) * 16);
     memcpy(symbol_RS_header, symbol_header, sizeof(symbol) * 7);
     while (i != 16) {
         cout << "symbol_RS_header[" << i << "] = " << symbol_RS_header[i].to_string() << endl;
@@ -106,7 +108,8 @@ void handlerSTDP(Header35& Jheader, InitialWord& iword,
     ExtendWord& eword, ContinueWord& cword) {
     //执行奇偶校验，70bit -> 75bit
     BIP(Jheader, iword, eword, cword);
-    //消息加密 TODO:
+    //TODO
+    //消息加密
 
     //Symbol转换，然后进行RS编码
     symbol* symbol_header = Jheader.to_symbol();
@@ -124,8 +127,22 @@ void handlerSTDP(Header35& Jheader, InitialWord& iword,
     //交织
     weave(symbol_RS_header, symbol_RS_iword, symbol_RS_eword, symbol_RS_cword);
 
+    //TODO
+    //添加时间精同步符号和时间粗同步符号
+
+    //TODO
+    //循环码移键控（CCSK）
+
+    //TODO
+    //码字加密
+
     //发送
     send_msg("一个STDP消息");
+    cout << "======发送的STDP消息内容如下：======\n"
+        << Jheader.toString()
+        << iword.toString()
+        << eword.toString()
+        << cword.toString() << endl;
 
     delete(symbol_header);
     symbol_header = nullptr;

@@ -37,7 +37,6 @@ void ExtendWord::handler_extend_word(string& bit_data) {
         bit_data.erase(0, 68);
         message = bitset<68>(temp);
     }
-
     m_message = message;
 }
 
@@ -51,6 +50,10 @@ void ExtendWord::show() {
 
 string ExtendWord::toString_70bit() {
     return m_format.to_string() + m_message.to_string();
+}
+
+string ExtendWord::toString() {
+    return m_format.to_string() + m_message.to_string() + m_BIP.to_string();
 }
 
 void ExtendWord::setBIP(bitset<5> BIP) {

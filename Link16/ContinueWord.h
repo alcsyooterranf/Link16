@@ -1,6 +1,6 @@
 #pragma once
 #include <bitset>
-#include "tools.h"
+#include "dataType.h"
 
 using namespace std;
 
@@ -21,5 +21,6 @@ public:
     void handler_continue_word(string& bit_data);
     void show();
     string toString_70bit();
+    string toString();
     void setBIP(bitset<5> BIP);
 };

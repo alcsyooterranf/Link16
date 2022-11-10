@@ -36,6 +36,9 @@
     <ClCompile Include="Header35.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="decodeTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataType.h">
@@ -54,6 +57,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Header35.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="decodeTools.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

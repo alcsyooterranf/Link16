@@ -18,6 +18,7 @@ symbol* ContinueWord::to_symbol() {
     string temp = { 0 };
     temp = m_format.to_string() + m_signal.to_string() + m_message.to_string()
         + m_BIP.to_string();
+
     int flag = 0;
     for (int i = 0; i < 15; i++) {
         symbol_words[i] = symbol(temp.substr(flag, 5));
@@ -38,7 +39,6 @@ void ContinueWord::handler_continue_word(string& bit_data) {
         bit_data.erase(0, 63);
         message = bitset<63>(temp);
     }
-
     m_message = message;
 }
 
@@ -53,6 +53,10 @@ void ContinueWord::show() {
 
 string ContinueWord::toString_70bit() {
     return m_format.to_string() + m_signal.to_string() + m_message.to_string();
+}
+
+string ContinueWord::toString() {
+    return m_format.to_string() + m_signal.to_string() + m_message.to_string() + m_BIP.to_string();
 }
 
 void ContinueWord::setBIP(bitset<5> BIP) {
