@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//#define TRANSMIT
+#define TRANSMIT
 #ifdef TRANSMIT
 int main()
 {
@@ -96,6 +96,20 @@ int main()
 10001010001011000010000100010001001000000000001001110010011001010111011001100101001000000010110001101111001001000000000000000000000000000000000000000110110001101100011001010100100000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
     string bit_message;
+
+    ////问题
+    //char test_ch[ecclen];
+    //for (int i = 0; i < ecclen; i++) {
+    //    test_ch[i] = 'u';
+    //}
+    ////正解
+    //string test_str(ecclen, '0');
+    //for (int i = 0; i < ecclen; i++) {
+    //    test_str[i] = test_ch[i];
+    //}
+    //cout << "test_str = " << test_str << endl;
+    //cout << "test_str_length = " << test_str.length() << endl;
+
 
     while (bit_data.length() != 0) {
         //截取一组消息

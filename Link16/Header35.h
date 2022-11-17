@@ -24,9 +24,11 @@ public:
         m_STN = STN;
     }
     string toString();
+    string toString_15B();
     symbol* to_symbol();
     void setType(bitset<3> type);
     void setPR(bitset<1> PR);
+    bitset<15> getSTN();
     void setSTN(bitset<15> STN);
     void setSDU(bitset<16> SDU);
 };

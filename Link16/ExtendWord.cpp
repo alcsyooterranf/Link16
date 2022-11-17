@@ -14,6 +14,7 @@ void ExtendWord::clear() {
 
 symbol* ExtendWord::to_symbol() {
     symbol* symbol_words = new symbol[15];
+    memset(symbol_words, 0, sizeof(symbol) * 15);
     string temp = { 0 };
     temp = m_format.to_string() + m_message.to_string() + m_BIP.to_string();
 
@@ -48,12 +49,16 @@ void ExtendWord::show() {
     cout << "\tBIP\t\t=\t" << m_BIP << endl;
 }
 
-string ExtendWord::toString_70bit() {
+string ExtendWord::toString_70B() {
     return m_format.to_string() + m_message.to_string();
 }
 
 string ExtendWord::toString() {
     return m_format.to_string() + m_message.to_string() + m_BIP.to_string();
+}
+
+bitset<5> ExtendWord::getBIP() {
+    return m_BIP;
 }
 
 void ExtendWord::setBIP(bitset<5> BIP) {

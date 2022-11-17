@@ -17,6 +17,7 @@ void InitialWord::clear() {
 
 symbol* InitialWord::to_symbol() {
     symbol* symbol_words = new symbol[15];
+    memset(symbol_words, 0, sizeof(symbol) * 15);
     string temp = { 0 };
     temp = m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string()
         + m_length.to_string() + m_message.to_string() + m_BIP.to_string();
@@ -60,14 +61,18 @@ void InitialWord::show() {
     cout << "\tBIP\t\t=\t" << m_BIP << endl;
 }
 
-string InitialWord::toString_70bit() {
-    return m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string()
-        + m_length.to_string() + m_message.to_string();
+string InitialWord::toString_70B() {
+    return m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string() + m_length.to_string()
+        + m_message.to_string();
 }
 
 string InitialWord::toString() {
     return m_format.to_string() + m_signal.to_string() + m_sub_signal.to_string()
         + m_length.to_string() + m_message.to_string() + m_BIP.to_string();
+}
+
+bitset<5> InitialWord::getBIP() {
+    return m_BIP;
 }
 
 void InitialWord::setBIP(bitset<5> BIP) {

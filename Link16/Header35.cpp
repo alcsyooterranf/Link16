@@ -8,6 +8,7 @@ using namespace std;
 
 symbol* Header35::to_symbol() {
     symbol* symbol_header = new symbol[7];
+    memset(symbol_header, 0, sizeof(symbol) * 7);
     string temp = { 0 };
     temp = m_type.to_string() + m_PR.to_string() + m_STN.to_string()
         + m_SDU.to_string();
@@ -28,6 +29,14 @@ symbol* Header35::to_symbol() {
 
 string Header35::toString() {
     return m_type.to_string() + m_PR.to_string() + m_STN.to_string() + m_SDU.to_string();
+}
+
+string Header35::toString_15B() {
+    return m_STN.to_string();
+}
+
+bitset<15> Header35::getSTN() {
+    return m_STN;
 }
 
 void Header35::setType(bitset<3> type) {

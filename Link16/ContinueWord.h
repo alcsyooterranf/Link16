@@ -20,7 +20,8 @@ public:
     symbol* to_symbol();
     void handler_continue_word(string& bit_data);
     void show();
-    string toString_70bit();
+    string toString_70B();
     string toString();
+    bitset<5> getBIP();
     void setBIP(bitset<5> BIP);
 };
