@@ -1,42 +1,28 @@
 #include <iostream>
 #include <string>
 #include <bitset>
-#include "dataType.h"
 #include "tools.h"
-#include "InitialWord.h"
-#include "ExtendWord.h"
-#include "ContinueWord.h"
-#include "Header35.h"
-#include "CRC.h"
 
-#include <cstddef>
-
-#define NO_GFLUT
-#include "schifra_galois_field.hpp"
-#undef NO_GFLUT
-#include "schifra_galois_field_polynomial.hpp"
-#include "schifra_sequential_root_generator_polynomial_creator.hpp"
-#include "schifra_reed_solomon_encoder.hpp"
-#include "schifra_reed_solomon_decoder.hpp"
-#include "schifra_reed_solomon_block.hpp"
-#include "schifra_error_processes.hpp"
-#include "schifra_reed_solomon_bitio.hpp"
+#include "src/AES.h"
+#include "src/AES.cpp"
+#include "md5.h"
+#include "md5.cpp"
 
 using namespace std;
+
+const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
 
 void send_msg(const string& msg) {
     std::cout << msg << "已发送成功" << endl;
 }
 
-//用伪随机数生成15bit的STN
-bitset<15> generateSTN() {
-    srand(time(0));
+//二进制数生成器
+string generateBIN(int length) {
     string res;
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < length; i++) {
         res += to_string(rand() % 2);
     }
-    bitset<15> STN = bitset<15>(res);
-    return STN;
+    return res;
 }
 
 string StrToBitStr(const string& str) {
@@ -77,12 +63,17 @@ string BitStrTostr(const string& str) {
     return res;
 }
 
-uint8_t* StrToCharArray(string& str_data) {
+//输入字符串str_data长度必须为8的整数倍
+//功能：将二进制字符串“0000000100000010”按8bit一组合并转化{ "1", "2" }的字符数组
+uint8_t* StrToCharArray(string& str_data, int char_length) {
+    int len = str_data.length();
+    if (len % 8 != 0) {
+        cout << "CRC输入字符串长度有误，需8bit整数倍";
+        return nullptr;
+    }
     //CRC(237, 225)，225bit要用29Bytes装填
-    uint8_t* data = new uint8_t[29];
-    memset(data, 0x00, sizeof(data));
-    str_data += "0000000";
-    for (int i = 0; i < 29; i++) {
+    uint8_t* data = new uint8_t[char_length]();
+    for (int i = 0; i < char_length; i++) {
         bitset<8> tmp = bitset<8>(str_data.substr(i * 8, 8));
         /*std::cout << tmp.to_string() << endl;*/
         data[i] = static_cast<uint8_t>(tmp.to_ulong());
@@ -93,9 +84,13 @@ uint8_t* StrToCharArray(string& str_data) {
 //使用CRC循环冗余校验(使用CRCpp库)
 void BIP(Header35& header35, InitialWord& iword, 
     ExtendWord& eword, ContinueWord& cword) {
-    std::cout << "执行奇偶校验......" << endl;
     string str_data = header35.toString_15B() + iword.toString_70B() + eword.toString_70B() + cword.toString_70B();
-    uint8_t* data = StrToCharArray(str_data);
+    //CRC(237, 225)，225bit要用29Bytes装填
+    str_data += "0000000";
+    uint8_t* data = StrToCharArray(str_data, 29);
+    if (data == nullptr) {
+        return;
+    }
     ////print
     //std::cout << "data = ";
     //for (int i = 0; i < 29; i++) {
@@ -107,83 +102,95 @@ void BIP(Header35& header35, InitialWord& iword,
     iword.setBIP(bitset<5>("0" + bit_crc.to_string().substr(4, 4)));
     eword.setBIP(bitset<5>("0" + bit_crc.to_string().substr(8, 4)));
     cword.setBIP(bitset<5>("0" + bit_crc.to_string().substr(12, 4)));
-    //std::cout << "iword_BIP = " << iword.getBIP() << endl;
-    //std::cout << "eword_BIP = " << eword.getBIP() << endl;
-    //std::cout << "cword_BIP = " << cword.getBIP() << endl;
     delete data;
+    data = nullptr;
 }
 
-void weave(symbol* symbol_RS_header, symbol* symbol_RS_iword,
-    symbol* symbol_RS_eword, symbol* symbol_RS_cword) {
-    std::cout << "执行字符交织......" << endl;
+//使用AES加密数据
+void AES_Encrypt(Header35& header35, InitialWord& iword,
+    ExtendWord& eword, ContinueWord& cword) {
+    string message = header35.toString() + iword.toString()
+        + eword.toString() + cword.toString();
+    //总长度 = 75 + 75 + 75 + 35 = 260bit。由于AES算法的输入限制，只加密前256bit数据。
+    string str_data = message.substr(0, 256);
+    uint8_t* plain = StrToCharArray(str_data, 32);
+    AES aes(AESKeyLength::AES_128);
+    string key = header35.getSDU().to_string().substr(0, 8);
+    MD5 md5(key);
+    const uint8_t* key_16 = md5.getDigest();
+    uint8_t* out = aes.EncryptECB(plain, BLOCK_BYTES_LENGTH, key_16);
+    string tmp;
+    for (int i = 0; i < 32; i++) {
+        tmp += out[i];
+    }
+    string bit_str = StrToBitStr(tmp) + message.substr(256, 4);
+
+    //将AES加密后的数据重新写入报头
+    string bit_header = bit_str.substr(0, 35);
+    header35.rewrite(bit_header);
+
+    //将AES加密后的数据重新写入字
+    string bit_iword = bit_str.substr(35, 75);
+    iword.rewrite(bit_iword);
+    string bit_eword = bit_str.substr(110, 75);
+    eword.rewrite(bit_eword);
+    string bit_cword = bit_str.substr(185, 75);
+    cword.rewrite(bit_cword);
 }
 
-//15Symbol->31Symbol
-//用RS纠错编码处理消息字，使用schifra库
-symbol* RS31_15(symbol* symbol_word) {
-    std::cout << "======" << "开始执行RS纠错编码 15Symbol(60B) --> 31Symbol(124B)" << "======" << endl;
-    for (int i = 0; i < 15; i++) {
-        std::cout << "编码前symbol_word[" << i << "] = " << symbol_word[i].to_string() << endl;
+//将长度为109Symbol的消息按照先行后列的顺序写入12 x 9的矩阵（最后一个Symbol不参与交织）,然后按照先列后行的顺序打印输出
+void weave(Header35& header35, InitialWord& iword,
+    ExtendWord& eword, ContinueWord& cword) {
+    symbol* bit_data = new symbol[108];
+    symbol* RS_Header = header35.getRS_Header();
+    symbol* RS_iword = iword.getRS_iword();
+    symbol* RS_eword = eword.getRS_eword();
+    symbol* RS_cword = cword.getRS_cword();
+
+    for (int i = 0; i < 108; i++) {
+        if (i < 16) {
+            bit_data[i] = RS_Header[i];
+        }
+        else if (i >= 16 && i < 47) {
+            bit_data[i] = RS_iword[i - 16];
+        }
+        else if (i >= 47 && i < 78) {
+            bit_data[i] = RS_eword[i - 47];
+        }
+        else {
+            bit_data[i] = RS_cword[i - 78];
+        }
     }
 
-    string message(15, 0x00);
-    for (int i = 0; i < 15; i++) {
-        message[i] = static_cast<char>(symbol_word[i].to_ulong());
-    }
-    
-    //cout << "转换后的symbol(二进制表示): " << endl;
-    //for (int i = 0; i < 15; i++) {
-    //    for (int j = 7; j >= 0; j--) {
-    //        cout << ((message[i] >> j) & 1);
-    //    }
-    //    cout << endl;
-    //}
-
-    symbol* symbol_RS_word = new symbol[31]();
-    memset(symbol_RS_word, 0, sizeof(symbol) * 31);
-    memcpy(symbol_RS_word, symbol_word, sizeof(symbol) * 15);
-
-    if (!RS(31, 15, message, symbol_RS_word)) {
-        std::cout << "RS编码成功" << endl;
-    }
-    else {
-        std::cout << "RS编码失败" << endl;
-    }
-    for (int i = 0; i < 31; i++) {
-        std::cout << "编码后symbol_RS_word[" << i << "] = " << symbol_RS_word[i].to_string() << endl;
-    }
-    return symbol_RS_word;
-}
-
-//7Symbol->16Symbol
-//用RS纠错编码处理消息头，使用schifra库
-symbol* RS16_7(symbol* symbol_header) {
-    std::cout << "======" << "开始执行RS纠错编码 7Symbol(28B) --> 15Symbol(60B)" << "======" << endl;
-    for (int i = 0; i < 7; i++) {
-        std::cout << "编码前symbol_header[" << i << "] = " << symbol_header[i].to_string() << endl;
+    symbol** matrix = new symbol * [12];
+    for (int i = 0; i < 12; i++) {
+        matrix[i] = new symbol[9];
+        for (int j = 0; j < 9; j++) {
+            matrix[i][j] = bit_data[i * 12 + j];
+        }
     }
 
-    string message(15, 0x00);
-    for (int i = 0; i < 7; i++) {
-        message[i] = static_cast<char>(symbol_header[i].to_ulong());
+    //发送
+    string res;
+    for (int i = 0; i < 12; i++) {
+        for (int j = 0; j < 9; j++) {
+            res += matrix[j][i].to_string();
+        }
     }
+    res += RS_cword[30].to_string();
+    std::cout << "======交织后的STDP消息内容如下：======\n";
+    cout << res << endl;
 
-    symbol* symbol_RS_header = new symbol[16]();
-    memset(symbol_RS_header, 0, sizeof(symbol) * 16);
-    memcpy(symbol_RS_header, symbol_header, sizeof(symbol) * 7);
+    //释放资源
+    delete[] bit_data;
+    bit_data = nullptr;
 
-    if (!RS(16, 7, message, symbol_RS_header)) {
-        std::cout << "RS编码成功" << endl;
+    for (int i = 0; i < 12; i++) {
+        delete[] matrix[i];
+        matrix[i] = nullptr;
     }
-    else {
-        std::cout << "RS编码失败" << endl;
-    }
-
-    //将symbol_RS_header_temp中的fec放入
-    for (int i = 0; i < 16; i++) {
-        std::cout << "编码后symbol_RS_header[" << i << "] = " << symbol_RS_header[i].to_string() << endl;
-    }
-    return symbol_RS_header;
+    delete[] matrix;
+    matrix = nullptr;
 }
 
 int RS(const size_t codeLength, const size_t dataLength, string& message, symbol* symbol_msg) {
@@ -293,69 +300,46 @@ int RS(const size_t codeLength, const size_t dataLength, string& message, symbol
         std::cout << "Error - Error correction failed!" << std::endl;
         return 1;
     }
-
-    //std::cout << "Encoder Parameters [" << schifra::reed_solomon::encoder<code_length, fec_length>::trait::code_length << ","
-    //    << schifra::reed_solomon::encoder<code_length, fec_length>::trait::data_length << ","
-    //    << schifra::reed_solomon::encoder<code_length, fec_length>::trait::fec_length << "]" << std::endl;
-
-    //std::cout << "Decoder Parameters [" << schifra::reed_solomon::decoder<code_length, fec_length>::trait::code_length << ","
-    //    << schifra::reed_solomon::decoder<code_length, fec_length>::trait::data_length << ","
-    //    << schifra::reed_solomon::decoder<code_length, fec_length>::trait::fec_length << "]" << std::endl;
     return 0;
 }
 
 void handlerSTDP(Header35& Jheader, InitialWord& iword,
     ExtendWord& eword, ContinueWord& cword) {
     //执行奇偶校验，70bit -> 75bit
+    std::cout << "======" << "开始执行奇偶校验" << "======" << endl;
     BIP(Jheader, iword, eword, cword);
 
-    //Symbol转换，然后进行RS编码
-    symbol* symbol_header = Jheader.to_symbol();
-    symbol* symbol_RS_header = RS16_7(symbol_header);
-
-    symbol* symbol_iword = iword.to_symbol();
-    symbol* symbol_RS_iword = RS31_15(symbol_iword);
-
-    symbol* symbol_eword = eword.to_symbol();
-    symbol* symbol_RS_eword = RS31_15(symbol_eword);
-
-    symbol* symbol_cword = cword.to_symbol();
-    symbol* symbol_RS_cword = RS31_15(symbol_cword);
-
-    //TODO
     //消息加密
-    
-    //交织
-    weave(symbol_RS_header, symbol_RS_iword, symbol_RS_eword, symbol_RS_cword);
+    std::cout << "======" << "开始AES加密" << "======" << endl;
+    AES_Encrypt(Jheader, iword, eword, cword);
 
-    //TODO
-    //添加时间精同步符号和时间粗同步符号
+    //Symbol转换，然后进行RS编码
+    Jheader.to_symbol();
+    std::cout << "======" << "开始执行RS纠错编码 7Symbol(28B) --> 15Symbol(60B)" << "======" << endl;
+    Jheader.RS16_7();
+
+    iword.to_symbol();
+    std::cout << "======" << "开始执行RS纠错编码 15Symbol(60B) --> 31Symbol(124B)" << "======" << endl;
+    iword.RS31_15();
+
+    eword.to_symbol();
+    std::cout << "======" << "开始执行RS纠错编码 15Symbol(60B) --> 31Symbol(124B)" << "======" << endl;
+    eword.RS31_15();
+
+    cword.to_symbol();
+    std::cout << "======" << "开始执行RS纠错编码 15Symbol(60B) --> 31Symbol(124B)" << "======" << endl;
+    cword.RS31_15();
+    
+    std::cout << "======交织前的STDP消息内容如下：======\n"
+        << Jheader.toString_STDP()
+        << iword.toString_STDP()
+        << eword.toString_STDP()
+        << cword.toString_STDP() << endl;
+
+    //交织并发送
+    std::cout << "======" << "开始执行字符交织" << "======" << endl;
+    weave(Jheader, iword, eword, cword);
 
     //发送
     send_msg("一个STDP消息");
-    std::cout << "======发送的STDP消息内容如下：======\n"
-        << Jheader.toString()
-        << iword.toString()
-        << eword.toString()
-        << cword.toString() << endl;
-
-    delete(symbol_header);
-    symbol_header = nullptr;
-    delete(symbol_RS_header);
-    symbol_RS_header = nullptr;
-
-    delete(symbol_iword);
-    symbol_iword = nullptr;
-    delete(symbol_RS_iword);
-    symbol_RS_iword = nullptr;
-
-    delete(symbol_eword);
-    symbol_eword = nullptr;
-    delete(symbol_RS_eword);
-    symbol_RS_eword = nullptr;
-
-    delete(symbol_cword);
-    symbol_cword = nullptr;
-    delete(symbol_RS_cword);
-    symbol_RS_cword = nullptr;
 }

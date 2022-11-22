@@ -3,16 +3,16 @@
 #include <string>
 #include <algorithm>
 #include "tools.h"
-#include "decodeTools.h"
 
 using namespace std;
 
-#define TRANSMIT
-#ifdef TRANSMIT
+#define SENDING
+#ifdef SENDING
 int main()
 {
     //数据准备
     string message = "Hello, everyone! My name is Cai Siyuan, I come from China.";
+    srand((unsigned)time(NULL));
 
     string bit_data = StrToBitStr(message);
     string raw_data = BitStrTostr(bit_data);
@@ -20,11 +20,11 @@ int main()
     cout << "raw_data = " << raw_data << endl;
 
     //生成35bit报头
-    bitset<15> STN = generateSTN();
+    bitset<15> STN = bitset<15>(generateBIN(15));
     Header35 Jheader = Header35(STN);
-    cout << "header_str = " << Jheader.toString() << endl;
+    Jheader.show();
 
-    int bit_length = bit_data.length();
+    size_t bit_length = bit_data.length();
     //封装和发送过程：使用标准格式(STD)进行封装---按照初始字->扩展字->继续字的顺序排列
     int flag = 3;
     InitialWord iword;
@@ -55,7 +55,6 @@ int main()
             iword.clear();
             iword.handler_initial_word(bit_data);
             iword.show();
-            //cout << "iword_70bit = " << iword.toString_70bit() << endl;
             break;
         }
         case 2:
@@ -63,7 +62,6 @@ int main()
             eword.clear();
             eword.handler_extend_word(bit_data);
             eword.show();
-            //cout << "eword_70bit = " << eword.toString_70bit() << endl;
             break;
         }
         case 1:
@@ -71,7 +69,6 @@ int main()
             cword.clear();
             cword.handler_continue_word(bit_data);
             cword.show();
-            //cout << "cword_70bit = " << cword.toString_70bit() << endl;
             break;
         }
         default:
@@ -80,7 +77,11 @@ int main()
         flag--;
     }
 }
-#else //RECIEVE
+#endif
+
+#ifdef RECIEVING
+#include "decodeTools.h"
+
 int main()
 {
     //正确数据
@@ -137,4 +138,32 @@ int main()
     string last = BitStrTostr(res);
     cout << "最终转换后的消息为：" << last << endl;
 }
-#endif // TRANSMIT
+#endif //
+
+#ifdef DEBUG
+const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
+#include "src/AES.h"
+#include "src/AES.cpp"
+
+int main() {
+    unsigned char plain[] = "01011010110101011010010110010110";
+    unsigned char key[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+    //unsigned int plainLen = 16 * sizeof(unsigned char);  //bytes in plaintext
+    cout << "明文 = ";
+    for (int i = 0; i < BLOCK_BYTES_LENGTH; i++) {
+        cout << hex << int(plain[i]);
+    }
+
+    AES aes(AESKeyLength::AES_128);  //128 - key length, can be 128, 192 or 256
+    unsigned char* out = aes.EncryptECB(plain, BLOCK_BYTES_LENGTH, key);
+    cout << "密文 = ";
+    for (int i = 0; i < BLOCK_BYTES_LENGTH; i++) {
+        cout << hex << int(out[i]);
+    }
+    unsigned char* innew = aes.DecryptECB(out, BLOCK_BYTES_LENGTH, key);
+    cout << "解密 = ";
+    for (int i = 0; i < BLOCK_BYTES_LENGTH; i++) {
+        cout << hex << int(innew[i]);
+    }
+}
+#endif // DEBUG
