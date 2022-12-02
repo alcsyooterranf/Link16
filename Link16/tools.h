@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
+#include "Word.hpp"
 #include "InitialWord.h"
 #include "ExtendWord.h"
 #include "ContinueWord.h"
-#include "Header35.h"
+#include "HeaderWord.h"
 #include "CRC.h"
+#include "AES.h"
+#include "md5.h"
 #include <cstddef>
 
 #define NO_GFLUT
@@ -20,27 +23,17 @@
 
 using namespace std;
 
-enum RS_Length
-{
-    code_16_7   = 16,
-    data_16_7   = 7,
-    fec_16_7    = 9,
-    code_31_15  = 31,
-    data_31_15  = 15,
-    fec_31_15   = 16,
-};
-
 void send_msg(const string& msg);
 string generateBIN(int length);
 string StrToBitStr(const string& str);
 string BitStrTostr(const string& str);
 uint8_t* StrToCharArray(string& str_data, int char_length);
-void BIP(Header35& header35, InitialWord& iword, 
+void BIP(HeaderWord& hword, InitialWord& iword,
 	ExtendWord& eword, ContinueWord& cword);
-void AES_Encrypt(Header35& header35, InitialWord& iword,
-    ExtendWord& eword, ContinueWord& cword);
-void weave(Header35& header35, InitialWord& iword,
-    ExtendWord& eword, ContinueWord& cword);
-void handlerSTDP(Header35& Jheader, InitialWord& iword,
+void AES_Encrypt(HeaderWord& hword, InitialWord& iword,
+	ExtendWord& eword, ContinueWord& cword);
+void weave(HeaderWord& hword, InitialWord& iword,
+	ExtendWord& eword, ContinueWord& cword);
+void handlerSTDP(HeaderWord& hword, InitialWord& iword,
 	ExtendWord& eword, ContinueWord& cword);
 int RS(const size_t codeLength, const size_t dataLength, string& message, symbol* symbol_RS_word);

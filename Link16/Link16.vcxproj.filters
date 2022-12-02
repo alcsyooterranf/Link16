@@ -21,9 +21,6 @@
     <ClCompile Include="tools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="dataType.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="InitialWord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,10 +30,19 @@
     <ClCompile Include="ContinueWord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Header35.cpp">
+    <ClCompile Include="HeaderWord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="decodeTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libirary\AES-master\src\AES.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libirary\md5-master\src\md5.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="STDPMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,11 +62,28 @@
     <ClInclude Include="ContinueWord.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Header35.h">
+    <ClInclude Include="HeaderWord.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="decodeTools.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Word.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libirary\AES-master\src\AES.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libirary\md5-master\src\md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="STDPMsg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Link16.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

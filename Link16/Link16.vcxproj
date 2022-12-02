@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\C++WorkSpace\libirary\CRCpp-master\inc;D:\C++WorkSpace\schifra;C:\Users\蔡思源\source\repos\alcsyooterranf\Reed-Solomon\include;D:\C++WorkSpace\libirary\AES-master;D:\C++WorkSpace\libirary\md5-master\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\C++WorkSpace\libirary\CRCpp-master\inc;D:\C++WorkSpace\schifra;C:\Users\蔡思源\source\repos\alcsyooterranf\Reed-Solomon\include;D:\C++WorkSpace\libirary\AES-master\src;D:\C++WorkSpace\libirary\md5-master\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,23 +128,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\libirary\AES-master\src\AES.cpp" />
+    <ClCompile Include="..\..\libirary\md5-master\src\md5.cpp" />
     <ClCompile Include="ContinueWord.cpp" />
-    <ClCompile Include="dataType.cpp" />
     <ClCompile Include="decodeTools.cpp" />
     <ClCompile Include="ExtendWord.cpp" />
-    <ClCompile Include="Header35.cpp" />
+    <ClCompile Include="HeaderWord.cpp" />
     <ClCompile Include="InitialWord.cpp" />
     <ClCompile Include="Link16.cpp" />
+    <ClCompile Include="STDPMsg.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\libirary\AES-master\src\AES.h" />
+    <ClInclude Include="..\..\libirary\md5-master\src\md5.h" />
     <ClInclude Include="ContinueWord.h" />
     <ClInclude Include="dataType.h" />
     <ClInclude Include="decodeTools.h" />
     <ClInclude Include="ExtendWord.h" />
-    <ClInclude Include="Header35.h" />
+    <ClInclude Include="HeaderWord.h" />
     <ClInclude Include="InitialWord.h" />
+    <ClInclude Include="STDPMsg.h" />
     <ClInclude Include="tools.h" />
+    <ClInclude Include="Word.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Link16.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
