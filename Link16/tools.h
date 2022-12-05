@@ -21,9 +21,8 @@
 #include "schifra_error_processes.hpp"
 #include "schifra_reed_solomon_bitio.hpp"
 
-using namespace std;
-
-void send_msg(const string& msg);
+void save_msg(const string& msg);
+bool deleteFile();
 string generateBIN(int length);
 string StrToBitStr(const string& str);
 string BitStrTostr(const string& str);

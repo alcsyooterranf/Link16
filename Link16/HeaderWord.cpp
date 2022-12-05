@@ -3,17 +3,15 @@
 #include "HeaderWord.h"
 #include "tools.h"
 
-using namespace std;
-
 //用比特字符串bit_str重写报头中的所有主字段。要求字符串只能由0或1组成，且长度为35
 void HeaderWord::rewrite(string& bit_str) {
 	if (bit_str.length() != 35) {
-		cout << "[rewrite]: bit_str长度非法" << endl;
+		std::cout << "[rewrite]: bit_str长度非法" << std::endl;
 		return;
 	}
 	for (int i = 0; i < 35; i++) {
 		if (bit_str[i] != '0' && bit_str[i] != '1') {
-			cout << "[rewrite]: bit_str内容非法" << endl;
+			std::cout << "[rewrite]: bit_str内容非法" << std::endl;
 			return;
 		}
 	}
@@ -27,7 +25,6 @@ void HeaderWord::to_symbol() {
 	string temp = { 0 };
 	temp = m_type.to_string() + m_PR.to_string() + m_STN.to_string()
 		+ m_SDU.to_string();
-
 	int flag = 0;
 	for (int i = 0; i < 7; i++) {
 		m_S_word[i] = symbol(temp.substr(flag, 5));
@@ -36,12 +33,12 @@ void HeaderWord::to_symbol() {
 }
 
 void HeaderWord::show() {
-	cout << "======" << "消息头已生成" << "======" << endl;
-	cout << "JHeader:" << endl;
-	cout << "\ttype\t\t=\t" << m_type << endl;
-	cout << "\tPR\t\t=\t" << m_PR << endl;
-	cout << "\tSTN\t\t=\t" << m_STN << endl;
-	cout << "\tSDU\t\t=\t" << m_SDU << endl;
+	std::cout << "======" << "消息头已生成" << "======" << std::endl;
+	std::cout << "JHeader:" << std::endl;
+	std::cout << "\ttype\t\t=\t" << m_type << std::endl;
+	std::cout << "\tPR\t\t=\t" << m_PR << std::endl;
+	std::cout << "\tSTN\t\t=\t" << m_STN << std::endl;
+	std::cout << "\tSDU\t\t=\t" << m_SDU << std::endl;
 }
 
 string HeaderWord::toString() {

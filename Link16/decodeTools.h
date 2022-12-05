@@ -18,8 +18,7 @@
 #include "schifra_error_processes.hpp"
 #include "schifra_reed_solomon_bitio.hpp"
 
-using namespace std;
-
+string read_msg();
 string getGroup(string& bit_data);
 void StrToSymbol(symbol* stdp, size_t length, string& message);
 string decode_weave(string& raw_msg);

@@ -129,7 +129,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libirary\AES-master\src\AES.cpp" />
-    <ClCompile Include="..\..\libirary\md5-master\src\md5.cpp" />
     <ClCompile Include="ContinueWord.cpp" />
     <ClCompile Include="decodeTools.cpp" />
     <ClCompile Include="ExtendWord.cpp" />
@@ -141,7 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libirary\AES-master\src\AES.h" />
-    <ClInclude Include="..\..\libirary\md5-master\src\md5.h" />
     <ClInclude Include="ContinueWord.h" />
     <ClInclude Include="dataType.h" />
     <ClInclude Include="decodeTools.h" />

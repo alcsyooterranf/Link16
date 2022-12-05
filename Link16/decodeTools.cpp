@@ -1,10 +1,24 @@
 #include <iostream>
 #include <bitset>
 #include "decodeTools.h"
+#include <fstream>
 
-using namespace std;
-
-const unsigned int BLOCK_BYTES_LENGTH = 16 * sizeof(unsigned char);
+string read_msg() {
+	ifstream fin;
+	fin.open(FILENAME, ios::in);
+	if (fin.is_open() == false) {
+		std::cout << "打开文件" << FILENAME << "失败" << std::endl;
+		return "";
+	}
+	//每次读一行
+	string buffer;
+	std::cout << "读到的数据为 = ";
+	while (fin >> buffer) {
+		std::cout << buffer << std::endl;
+	}
+	fin.close();
+	return buffer;
+}
 
 string getGroup(string& bit_data) {
 	string group = bit_data.substr(0, 545);
@@ -23,9 +37,6 @@ void StrToSymbol(symbol* stdp, size_t length, string& message) {
 string decode_weave(string& raw_msg) {
 	symbol* bit_data = new symbol[108];
 	StrToSymbol(bit_data, 108, raw_msg);
-	//for (int i = 0; i < 108; i++) {
-	//	bit_data[i] = bitset<5>(raw_msg.substr(i * 5, 5));
-	//}
 
 	symbol** matrix = new symbol * [9];
 	for (int i = 0; i < 9; i++) {
@@ -65,14 +76,6 @@ string decode_RS_code_16_7(symbol* head) {
 	for (int i = data_31_15 + 7; i < code_31_15; i++) {
 		str_hword[i] = static_cast<char>(head[i - data_31_15].to_ulong());
 	}
-	////print
-	//std::cout << "RS编码前转换后的symbol(二进制表示): " << std::endl;
-	//for (int i = 0; i < code_31_15; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((str_hword[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
 	string hword_data(data_31_15, 0x00);
 	if (!decode_RS(str_hword, hword_data)) {
 		std::cout << "RS解码成功" << std::endl;
@@ -90,14 +93,6 @@ string decode_RS_code_31_15(symbol* head) {
 	for (int i = 0; i < code_31_15; i++) {
 		str_word[i] = static_cast<char>(head[i].to_ulong());
 	}
-	////print
-	//std::cout << "RS编码前转换后的symbol(二进制表示): " << std::endl;
-	//for (int i = 0; i < code_31_15; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((str_iword[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
 	string word_data(data_31_15, 0x00);
 	if (!decode_RS(str_word, word_data)) {
 		std::cout << "RS解码成功" << std::endl;
@@ -138,15 +133,6 @@ string decode_RS_AES_BIP_handler(string& message) {
 	delete[] stdp;
 	stdp = nullptr;
 
-	//print
-	std::cout << "before_DES_Decrypt = " << std::endl;
-	for (int i = 0; i < 52; i++) {
-		for (int j = 7; j >= 0; j--) {
-			std::cout << ((char_data[i] >> j) & 1);
-		}
-	}
-	std::cout << std::endl;
-
 	//AES解密
 	string bit_str = AES_decrypt(char_data);
 
@@ -161,20 +147,29 @@ string AES_decrypt(string& char_data) {
 		str_data += bs.to_string();
 	}
 
-	std::cout << "str_data.length() = " << str_data.length() << std::endl;
-	std::cout << "AES解密函数入参：str_data = " << str_data << std::endl;
-
 	string ciper_data = str_data.substr(0, 256);
 	uint8_t* cipher = StrToCharArray(ciper_data, 32);
-	AES aes(AESKeyLength::AES_128);
-	const uint8_t key_16[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	uint8_t* out = aes.DecryptECB(cipher, BLOCK_BYTES_LENGTH, key_16);
+
+	AES aes(AESKeyLength::AES_256);
+	const uint8_t key_16[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+						 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+						 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+						 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
+	uint8_t* plain = aes.DecryptECB(cipher, BLOCK_BYTES_LENGTH * 2, key_16);
+
+	delete[] cipher;
+	cipher = nullptr;
+
 	string tmp;
 	for (int i = 0; i < 32; i++) {
-		tmp += out[i];
+		tmp += plain[i];
 	}
+
+	delete[] plain;
+	plain = nullptr;
+
 	string bit_str = StrToBitStr(tmp) + str_data.substr(256, 4);
-	std::cout << "AES解密之后字符串 = " << bit_str << std::endl;
+
 	return bit_str;
 }
 
@@ -220,31 +215,6 @@ int decode_RS(string& message, string& str_data) {
 	string fec = message.substr(15, 16);
 	/* Instantiate RS Block For Codec */
 	schifra::reed_solomon::block<code_length, fec_length> block(data, fec);
-
-	///* Pad message with nulls up until the code-word length */
-	//message.resize(code_length, 0x00);
-
-	///* Populate RS Blocks with 5-bit data symbols */
-	//for (std::size_t i = 0; i < code_length; ++i)
-	//{
-	//	/*block[i] = static_cast<int>(i & mask);*/
-	//	block[i] = static_cast<int>(message[i] & mask);
-	//}
-
-	////格式化str_fec
-	//string str_fec(RS_Length::fec_31_15, 0x00);
-	//block.fec_to_string(str_fec);
-
-	//string temp(RS_Length::data_31_15, 0x00);
-	//block.data_to_string(temp);
-	//cout << "block.data = ";
-	////print
-	//for (int i = 0; i < RS_Length::data_31_15; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((temp[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
 
 	if (!decoder.decode(block))
 	{

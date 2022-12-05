@@ -3,17 +3,15 @@
 #include "ContinueWord.h"
 #include "tools.h"
 
-using namespace std;
-
 //用比特字符串bit_str重写字中的所有主字段。要求字符串只能由0或1组成，且长度为75
 void ContinueWord::rewrite(string& bit_str) {
 	if (bit_str.length() != 75) {
-		cout << "[rewrite]: bit_str长度非法" << endl;
+		std::cout << "[rewrite]: bit_str长度非法" << std::endl;
 		return;
 	}
 	for (int i = 0; i < 75; i++) {
 		if (bit_str[i] != '0' && bit_str[i] != '1') {
-			cout << "[rewrite]: bit_str内容非法" << endl;
+			std::cout << "[rewrite]: bit_str内容非法" << std::endl;
 			return;
 		}
 	}
@@ -59,12 +57,12 @@ void ContinueWord::handler_word(string& bit_data) {
 }
 
 void ContinueWord::show() {
-	cout << "======" << "继续字已填充完成" << "======" << endl;
-	cout << "initial_word:" << endl;
-	cout << "\tformat\t\t=\t" << m_format << endl;
-	cout << "\tsignal\t\t=\t" << m_signal << endl;
-	cout << "\tmessage\t\t=\t" << m_message << endl;
-	cout << "\tBIP\t\t=\t" << m_BIP << endl;
+	std::cout << "======" << "继续字已填充完成" << "======" << std::endl;
+	std::cout << "initial_word:" << std::endl;
+	std::cout << "\tformat\t\t=\t" << m_format << std::endl;
+	std::cout << "\tsignal\t\t=\t" << m_signal << std::endl;
+	std::cout << "\tmessage\t\t=\t" << m_message << std::endl;
+	std::cout << "\tBIP\t\t=\t" << m_BIP << std::endl;
 }
 
 string ContinueWord::toString_70B() {

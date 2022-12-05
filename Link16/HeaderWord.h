@@ -1,8 +1,6 @@
 #pragma once
 #include "Word.hpp"
 
-using namespace std;
-
 //35bit±¨Í·
 class HeaderWord : public Word<RS_Length::code_16_7, RS_Length::data_16_7> {
 private:

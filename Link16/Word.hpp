@@ -24,24 +24,27 @@ public:
 	//用RS纠错编码处理消息字，使用schifra库
 	void RS_handler() {
 		symbol* symbol_word = this->getS_word();
-		std::cout << "编码前symbol_word = " << std::endl;
-		for (int i = 0; i < dataLength; i++) {
-			std::cout << symbol_word[i].to_string();
-		}
-		std::cout << std::endl;
+
+		////print
+		//std::cout << "编码前symbol_word = " << std::endl;
+		//for (int i = 0; i < dataLength; i++) {
+		//	std::cout << symbol_word[i].to_string();
+		//}
+		//std::cout << std::endl;
 
 		string message(dataLength, 0x00);
 		for (int i = 0; i < dataLength; i++) {
 			message[i] = static_cast<char>(symbol_word[i].to_ulong());
 		}
 
-		std::cout << "RS编码前转换后的symbol(二进制表示): " << std::endl;
-		for (int i = 0; i < dataLength; i++) {
-			for (int j = 7; j >= 0; j--) {
-				std::cout << ((message[i] >> j) & 1);
-			}
-		}
-		std::cout << std::endl;
+		////print
+		//std::cout << "RS编码前转换后的symbol(二进制表示): " << std::endl;
+		//for (int i = 0; i < dataLength; i++) {
+		//	for (int j = 7; j >= 0; j--) {
+		//		std::cout << ((message[i] >> j) & 1);
+		//	}
+		//}
+		//std::cout << std::endl;
 
 		symbol* symbol_RS_word = this->getRS_word();
 		memset(symbol_RS_word, 0, sizeof(symbol) * codeLength);
@@ -53,11 +56,13 @@ public:
 		else {
 			std::cout << "RS编码失败" << std::endl;
 		}
-		std::cout << "编码后symbol_RS_word = " << std::endl;
-		for (int i = 0; i < codeLength; i++) {
-			std::cout << symbol_RS_word[i].to_string();
-		}
-		std::cout << std::endl;
+
+		////print
+		//std::cout << "编码后symbol_RS_word = " << std::endl;
+		//for (int i = 0; i < codeLength; i++) {
+		//	std::cout << symbol_RS_word[i].to_string();
+		//}
+		//std::cout << std::endl;
 	}
 
 	virtual void clear() {
