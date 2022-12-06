@@ -12,12 +12,27 @@ string read_msg() {
 	}
 	//每次读一行
 	string buffer;
-	std::cout << "读到的数据为 = ";
+	std::cout << "读到的数据如下：" << std::endl;
 	while (fin >> buffer) {
 		std::cout << buffer << std::endl;
 	}
 	fin.close();
 	return buffer;
+}
+
+string getData(string& bit_data, int begin, int length) {
+	string res = bit_data.substr(begin, length);
+	bitset<6> high = bitset<6>(res.substr(0, 6));
+	if (high.all()) {
+		return res.substr(6);
+	}
+	else if (high.none()) {
+		return "";
+	}
+	else {
+		int len = static_cast<int>(high.to_ulong());
+		return res.substr(length - len);
+	}
 }
 
 string getGroup(string& bit_data) {
@@ -169,7 +184,6 @@ string AES_decrypt(string& char_data) {
 	plain = nullptr;
 
 	string bit_str = StrToBitStr(tmp) + str_data.substr(256, 4);
-
 	return bit_str;
 }
 

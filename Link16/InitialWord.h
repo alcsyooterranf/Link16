@@ -8,7 +8,7 @@ private:
 	bitset<5>	m_signal;		//标识
 	bitset<3>	m_sub_signal;	//子标识
 	bitset<3>	m_length;		//消息长度，表示初始字后面的扩展字或继续字的总数，最多7个
-	bitset<57>	m_message;	    //信息字
+	bitset<57>	m_message;	    //信息字，前六个bit存消息长度（全部为1表示此字消息已满）
 	bitset<5>	m_BIP;		    //奇偶校验，第一位空闲，后四位执行校验
 
 public:

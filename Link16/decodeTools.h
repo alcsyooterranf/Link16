@@ -20,6 +20,7 @@
 
 string read_msg();
 string getGroup(string& bit_data);
+string getData(string& bit_data, int begin, int end);
 void StrToSymbol(symbol* stdp, size_t length, string& message);
 string decode_weave(string& raw_msg);
 string decode_RS_code_16_7(symbol* head);

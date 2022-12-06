@@ -113,15 +113,6 @@ void AES_Encrypt(HeaderWord& hword, InitialWord& iword,
 	string str_data = message.substr(0, 256);
 	uint8_t* plain = StrToCharArray(str_data, 32);
 
-	////print
-	//std::cout << "AES_Encrypt明文plain的二进制输出 = " << std::endl;
-	//for (int i = 0; i < 32; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((plain[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
-
 	AES aes(AESKeyLength::AES_256);
 	const uint8_t key_16[] = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 						 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -132,28 +123,10 @@ void AES_Encrypt(HeaderWord& hword, InitialWord& iword,
 	delete[] plain;
 	plain = nullptr;
 
-	////print
-	//std::cout << "AES_Encrypt密文out的二进制输出 = " << std::endl;
-	//for (int i = 0; i < 32; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((out[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
-
 	string tmp;
 	for (int i = 0; i < 32; i++) {
 		tmp += out[i];
 	}
-
-	////print
-	//std::cout << "tmp的二进制输出 = " << std::endl;
-	//for (int i = 0; i < 32; i++) {
-	//	for (int j = 7; j >= 0; j--) {
-	//		std::cout << ((tmp[i] >> j) & 1);
-	//	}
-	//}
-	//std::cout << std::endl;
 
 	string bit_str = StrToBitStr(tmp) + message.substr(256, 4);
 
@@ -332,12 +305,6 @@ void handlerSTDP(HeaderWord& hword, InitialWord& iword,
 	cword.to_symbol();
 	std::cout << "======" << "ContinueWord执行RS纠错编码 15Symbol --> 31Symbol" << "======" << std::endl;
 	cword.RS_handler();
-
-	//std::cout << "======交织前的STDP消息内容如下：======\n"
-	//	<< hword.toString_STDP()
-	//	<< iword.toString_STDP()
-	//	<< eword.toString_STDP()
-	//	<< cword.toString_STDP() << std::endl;
 
 	//交织并发送
 	std::cout << "======" << "开始执行字符交织" << "======" << std::endl;

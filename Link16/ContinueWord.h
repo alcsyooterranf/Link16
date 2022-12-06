@@ -6,7 +6,7 @@ class ContinueWord : public Word<RS_Length::code_31_15, RS_Length::data_31_15> {
 private:
 	bitset<2>	m_format;		//字格式：继续字为01
 	bitset<5>	m_signal;		//继续字标识，每条J系列消息最多允许定义32个继续字
-	bitset<63>	m_message;	    //信息字
+	bitset<63>	m_message;	    //信息字，前六个bit存消息长度（全部为1表示此字消息已满）
 	bitset<5>	m_BIP;		    //奇偶校验，第一位空闲，后四位执行校验
 
 public:

@@ -22,10 +22,10 @@ void ContinueWord::rewrite(string& bit_str) {
 }
 
 void ContinueWord::clear() {
-	m_format = 0b00;
-	m_signal = 0;
-	m_message = 0;
-	m_BIP = 0;
+	m_format.reset();
+	m_signal.reset();
+	m_message.reset();
+	m_BIP.reset();
 	Word::clear();
 }
 
@@ -44,14 +44,21 @@ void ContinueWord::to_symbol() {
 void ContinueWord::handler_word(string& bit_data) {
 	size_t len = bit_data.length();
 	bitset<63> message;
-	if (len < 63) {
+	if (len < 57) {
 		message = bitset<63>(bit_data);
+		bitset<63> high = bitset<63>(len);
+		high = high << 57;
+		message = message | high;
 		bit_data.clear();
 	}
 	else {
-		string temp = bit_data.substr(0, 63);
-		bit_data.erase(0, 63);
+		string temp = bit_data.substr(0, 57);
+		bit_data.erase(0, 57);
 		message = bitset<63>(temp);
+		bitset<63> high;
+		high.set();
+		high = high << 57;
+		message = message | high;
 	}
 	m_message = message;
 }

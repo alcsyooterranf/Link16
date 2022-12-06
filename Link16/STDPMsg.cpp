@@ -9,8 +9,8 @@ void STDPMsg::setBitMsg(string& bit_msg) {
 }
 
 void STDPMsg::clear() {
-	m_raw_msg = "0";
-	m_bit_msg = "0";
+	m_raw_msg.clear();
+	m_bit_msg.clear();
 	m_headerword->clear();
 	m_iword->clear();
 	m_eword->clear();

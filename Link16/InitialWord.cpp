@@ -24,12 +24,12 @@ void InitialWord::rewrite(string& bit_str) {
 }
 
 void InitialWord::clear() {
-	m_format = 0b00;
-	m_signal = 0;
-	m_sub_signal = 0;
-	m_length = 0;
-	m_message = 0;
-	m_BIP = 0;
+	m_format.reset();
+	m_signal.reset();
+	m_sub_signal.reset();
+	m_length.reset();
+	m_message.reset();
+	m_BIP.reset();
 	Word::clear();
 }
 
@@ -49,18 +49,23 @@ void InitialWord::to_symbol() {
 void InitialWord::handler_word(string& bit_data) {
 	size_t len = bit_data.length();
 	bitset<57> message;
-	if (len < 57) {
+	if (len < 51) {
 		message = bitset<57>(bit_data);
+		bitset<57> high = bitset<57>(len);
+		high = high << 51;
+		message = message | high;
 		bit_data.clear();
 	}
 	else {
-		string temp = bit_data.substr(0, 57);
-		bit_data.erase(0, 57);
+		string temp = bit_data.substr(0, 51);
+		bit_data.erase(0, 51);
 		message = bitset<57>(temp);
+		bitset<57> high;
+		high.set();
+		high = high << 51;
+		message = message | high;
 	}
 
-	//m_signal = bitset<5>();
-	//m_sub_signal = bitset<3>();
 	//STDP封装标准，初始字后只跟两个字，一个扩展字和一个继续字
 	m_length = bitset<3>(0b010);
 	m_message = message;

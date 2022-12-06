@@ -21,9 +21,9 @@ void ExtendWord::rewrite(string& bit_str) {
 }
 
 void ExtendWord::clear() {
-	m_format = 0b00;
-	m_message = 0;
-	m_BIP = 0;
+	m_format.reset();
+	m_message.reset();
+	m_BIP.reset();
 	Word::clear();
 }
 
@@ -41,14 +41,21 @@ void ExtendWord::to_symbol() {
 void ExtendWord::handler_word(string& bit_data) {
 	size_t len = bit_data.length();
 	bitset<68> message;
-	if (len < 68) {
+	if (len < 62) {
 		message = bitset<68>(bit_data);
+		bitset<68> high = bitset<68>(len);
+		high = high << 62;
+		message = message | high;
 		bit_data.clear();
 	}
 	else {
-		string temp = bit_data.substr(0, 68);
-		bit_data.erase(0, 68);
+		string temp = bit_data.substr(0, 62);
+		bit_data.erase(0, 62);
 		message = bitset<68>(temp);
+		bitset<68> high;
+		high.set();
+		high = high << 62;
+		message = message | high;
 	}
 	m_message = message;
 }
