@@ -65,7 +65,7 @@ void ContinueWord::handler_word(string& bit_data) {
 
 void ContinueWord::show() {
 	std::cout << "======" << "继续字已填充完成" << "======" << std::endl;
-	std::cout << "initial_word:" << std::endl;
+	std::cout << "continue_word:" << std::endl;
 	std::cout << "\tformat\t\t=\t" << m_format << std::endl;
 	std::cout << "\tsignal\t\t=\t" << m_signal << std::endl;
 	std::cout << "\tmessage\t\t=\t" << m_message << std::endl;

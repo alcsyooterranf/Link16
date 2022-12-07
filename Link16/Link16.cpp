@@ -3,11 +3,12 @@
 #include <algorithm>
 #include "tools.h"
 
-#define SENDING
+#define RECIEVING
 #ifdef SENDING
 int main()
 {
 	//数据准备
+	std::cout << "请输入要转换的字符串：";
 	string message;
 	getline(std::cin, message);//读入一行字符串，遇到换行结束
 
@@ -103,28 +104,29 @@ int main()
 		string str_weave = decode_weave(str_group);
 
 		//解RS编码、AES解密、BIP校验
-		string str_data = decode_RS_AES_BIP_handler(str_weave);
-		if (str_data.empty()) {
-			return 2;
+		string bit_data = decode_RS_AES_BIP_handler(str_weave);
+		if (bit_data.empty()) {
+			std::cout << "[decode_RS_AES_BIP_handler]函数内部出错" << std::endl;
+			return -1;
 		}
 
 		//去HeaderWord
-		str_data.erase(0, 35);
+		bit_data.erase(0, 35);
 		//从InitialWord中取data
-		bit_msg += getData(str_data, 13, 57);
+		bit_msg += getData(bit_data, 13, 57);
 		//去InitialWord
-		str_data.erase(0, 75);
+		bit_data.erase(0, 75);
 		//从ExtendWord中取data
-		bit_msg += getData(str_data, 2, 68);
+		bit_msg += getData(bit_data, 2, 68);
 		//去ExtendWord
-		str_data.erase(0, 75);
+		bit_data.erase(0, 75);
 		//从ContinueWord中取data
-		bit_msg += getData(str_data, 7, 63);
+		bit_msg += getData(bit_data, 7, 63);
 	}
 	stdp_msg.setBitMsg(bit_msg);
 	std::cout << "消息数据长度为：" << bit_msg.length() << std::endl;
 	std::cout << "接收到的消息为：" << bit_msg << std::endl;
-	std::cout << "最终解码后的消息为：" << BitStrTostr(bit_msg) << std::endl;
+	std::cout << "解码后的消息为：" << BitStrTostr(bit_msg) << std::endl;
 }
 #endif // RECIEVING
 

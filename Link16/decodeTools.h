@@ -27,4 +27,5 @@ string decode_RS_code_16_7(symbol* head);
 string decode_RS_code_31_15(symbol* head);
 string decode_RS_AES_BIP_handler(string& message);
 int decode_RS(string& message, string& str_data);
-string AES_decrypt(string& char_data);
+string AES_Decrypt(string& char_data);
+bool decode_BIP(string& bit_str);

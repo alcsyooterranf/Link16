@@ -12,7 +12,7 @@ string read_msg() {
 	}
 	//每次读一行
 	string buffer;
-	std::cout << "读到的数据如下：" << std::endl;
+	std::cout << "从txt文档中读到的数据如下：" << std::endl;
 	while (fin >> buffer) {
 		std::cout << buffer << std::endl;
 	}
@@ -149,12 +149,18 @@ string decode_RS_AES_BIP_handler(string& message) {
 	stdp = nullptr;
 
 	//AES解密
-	string bit_str = AES_decrypt(char_data);
+	string bit_data = AES_Decrypt(char_data);
 
-	return bit_str;
+	//BIP奇偶校验
+	if (!decode_BIP(bit_data)) {
+		std::cout << "BIP奇偶校验有误" << std::endl;
+		return "";
+	}
+
+	return bit_data;
 }
 
-string AES_decrypt(string& char_data) {
+string AES_Decrypt(string& char_data) {
 	string str_data;
 	for (auto i : char_data)
 	{
@@ -238,4 +244,23 @@ int decode_RS(string& message, string& str_data) {
 	}
 	block.data_to_string(str_data);
 	return 0;
+}
+
+bool decode_BIP(string& bit_str) {
+	string str_data = bit_str.substr(4, 15) + bit_str.substr(35, 70) + bit_str.substr(35 + 75, 70)
+		+ bit_str.substr(35 + 75 * 2, 70);
+	string str_BIP = bit_str.substr(35 + 70, 5) + bit_str.substr(35 + 75 + 70, 5)
+		+ bit_str.substr(35 + 75 * 2 + 70, 5);
+	str_data += "0000000";
+
+	uint8_t* data = StrToCharArray(str_data, 29);
+	if (data == nullptr) {
+		return false;
+	}
+	std::uint16_t crc = CRC::CalculateBits(data, 225, CRC::CRC_12_CDMA2000());
+	bitset<16> bit_crc = bitset<16>(crc);
+
+	string str_BIP_cmp = "0" + bit_crc.to_string().substr(4, 4) + "0" + bit_crc.to_string().substr(8, 4)
+		+ "0" + bit_crc.to_string().substr(12, 4);
+	return (str_BIP_cmp == str_BIP) ? true : false;
 }
