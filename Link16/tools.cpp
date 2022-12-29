@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <bitset>
 #include <fstream>
@@ -42,6 +43,18 @@ string generateBIN(int length) {
 		res += to_string(rand() % 2);
 	}
 	return res;
+}
+
+vector<string> stringSplit(const string& str, char delim) {
+	std::stringstream ss(str);
+	string item;
+	vector<std::string> elems;
+	while (getline(ss, item, delim)) {
+		if (!item.empty()) {
+			elems.push_back(item);
+		}
+	}
+	return elems;
 }
 
 string StrToBitStr(const string& str) {

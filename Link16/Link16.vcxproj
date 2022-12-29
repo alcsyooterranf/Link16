@@ -132,6 +132,7 @@
     <ClCompile Include="ContinueWord.cpp" />
     <ClCompile Include="decodeTools.cpp" />
     <ClCompile Include="ExtendWord.cpp" />
+    <ClCompile Include="global.cpp" />
     <ClCompile Include="HeaderWord.cpp" />
     <ClCompile Include="InitialWord.cpp" />
     <ClCompile Include="Link16.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="dataType.h" />
     <ClInclude Include="decodeTools.h" />
     <ClInclude Include="ExtendWord.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="HeaderWord.h" />
     <ClInclude Include="InitialWord.h" />
     <ClInclude Include="STDPMsg.h" />

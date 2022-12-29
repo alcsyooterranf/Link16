@@ -2,13 +2,22 @@
 #include <bitset>
 #include <algorithm>
 #include "tools.h"
+#include "global.h"
 
-#define RECIEVING
+#define SENDING
 #ifdef SENDING
 int main()
 {
 	//数据准备
-	std::cout << "请输入要转换的字符串：";
+	std::cout << "请输入要发送的战术消息类型（m n）,以换行键结束：";
+	string type;
+	getline(std::cin, type);
+	if (g_JType.count(type) == 0) {
+		std::cout << "发送的消息类型不存在" << std::endl;
+		return -1;
+	}
+	std::cout << "发送的消息类型为：" << g_JType[type] << std::endl;
+	std::cout << "请输入要转换的字符串，换行键结束：";
 	string message;
 	getline(std::cin, message);//读入一行字符串，遇到换行结束
 
@@ -55,7 +64,7 @@ int main()
 		case 3:
 		{
 			iword.clear();
-			iword.handler_word(bit_data);
+			iword.handler_word(bit_data, type);
 			iword.show();
 			break;
 		}

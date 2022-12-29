@@ -46,8 +46,11 @@ void InitialWord::to_symbol() {
 	}
 }
 
-void InitialWord::handler_word(string& bit_data) {
+void InitialWord::handler_word(string& bit_data, string& type) {
 	size_t len = bit_data.length();
+	vector<string> type_number = stringSplit(type, ' ');
+	setSignal(bitset<5>(stoi(type_number[0])));
+	setSubSignal(bitset<3>(stoi(type_number[1])));
 	bitset<57> message;
 	if (len < 51) {
 		message = bitset<57>(bit_data);
@@ -98,4 +101,12 @@ bitset<5> InitialWord::getBIP() {
 
 void InitialWord::setBIP(bitset<5> BIP) {
 	m_BIP = BIP;
+}
+
+void InitialWord::setSignal(bitset<5> signal) {
+	m_signal = signal;
+}
+
+void InitialWord::setSubSignal(bitset<3> sub_signal) {
+	m_sub_signal = sub_signal;
 }

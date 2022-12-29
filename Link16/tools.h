@@ -24,6 +24,7 @@
 void save_msg(const string& msg);
 bool deleteFile();
 string generateBIN(int length);
+vector<string> stringSplit(const string& str, char delim);
 string StrToBitStr(const string& str);
 string BitStrTostr(const string& str);
 uint8_t* StrToCharArray(string& str_data, int char_length);
