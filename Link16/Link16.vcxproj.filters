@@ -36,13 +36,16 @@
     <ClCompile Include="decodeTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libirary\AES-master\src\AES.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="STDPMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="global.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AES.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,13 +74,55 @@
     <ClInclude Include="Word.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libirary\AES-master\src\AES.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="STDPMsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="global.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AES.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CRC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_error_processes.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_galois_field.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_galois_field_polynomial.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_reed_solomon_bitio.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_reed_solomon_block.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_reed_solomon_decoder.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_reed_solomon_encoder.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_sequential_root_generator_polynomial_creator.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_fileio.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_ecc_traits.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_galois_field_element.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schifra_crc.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
