@@ -21,6 +21,8 @@
 #include "schifra_error_processes.hpp"
 #include "schifra_reed_solomon_bitio.hpp"
 
+int encoder_Link16(int m, int n, string& inputs);
+int decoder_Link16();
 void save_msg(const string& msg);
 bool deleteFile();
 string generateBIN(int length);

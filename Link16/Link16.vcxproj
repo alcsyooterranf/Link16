@@ -136,6 +136,7 @@
     <ClCompile Include="global.cpp" />
     <ClCompile Include="HeaderWord.cpp" />
     <ClCompile Include="InitialWord.cpp" />
+    <ClCompile Include="interface.cpp" />
     <ClCompile Include="Link16.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="STDPMsg.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="global.h" />
     <ClInclude Include="HeaderWord.h" />
     <ClInclude Include="InitialWord.h" />
+    <ClInclude Include="interface.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="schifra_crc.hpp" />
     <ClInclude Include="schifra_ecc_traits.hpp" />
