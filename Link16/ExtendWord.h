@@ -22,4 +22,6 @@ public:
 	string toString();
 	bitset<5> getBIP();
 	void setBIP(bitset<5> BIP);
+	bitset<68> getMessage();
+	string getData();
 };

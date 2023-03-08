@@ -14,7 +14,7 @@ private:
 public:
 	STDPMsg() : m_raw_msg("0"), m_bit_msg("0") {
 		//TODO: 记得改回随机数
-		m_headerword = new HeaderWord(bitset<15>(generateBIN(15)));
+		m_headerword = new HeaderWord(bitset<15>(Tools::generateBIN(15)));
 		m_iword = new InitialWord();
 		m_eword = new ExtendWord();
 		m_cword = new ContinueWord();
@@ -31,7 +31,15 @@ public:
 		m_cword = nullptr;
 	}
 
+	HeaderWord* getHeaderWord();
+	InitialWord* getInitialWord();
+	ExtendWord* getExtendWord();
+	ContinueWord* getContinueWord();
 	void setRawMsg(string& raw_msg);
 	void setBitMsg(string& bit_msg);
+	void setHeaderWord(string& bit_data);
+	void setInitialWord(string& bit_data);
+	void setExtendWord(string& bit_data);
+	void setContinueWord(string& bit_data);
 	void clear();
 };

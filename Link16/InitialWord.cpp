@@ -48,7 +48,7 @@ void InitialWord::to_symbol() {
 
 void InitialWord::handler_word(string& bit_data, string& type) {
 	size_t len = bit_data.length();
-	vector<string> type_number = stringSplit(type, ' ');
+	vector<string> type_number = Tools::stringSplit(type, ' ');
 	setSignal(bitset<5>(stoi(type_number[0])));
 	setSubSignal(bitset<3>(stoi(type_number[1])));
 	bitset<57> message;
@@ -109,4 +109,31 @@ void InitialWord::setSignal(bitset<5> signal) {
 
 void InitialWord::setSubSignal(bitset<3> sub_signal) {
 	m_sub_signal = sub_signal;
+}
+
+bitset<5> InitialWord::getSignal() {
+	return m_signal;
+}
+
+bitset<3> InitialWord::getSubSignal() {
+	return m_sub_signal;
+}
+
+bitset<57> InitialWord::getMessage() {
+	return m_message;
+}
+
+string InitialWord::getData() {
+	string message = getMessage().to_string();
+	bitset<6> high = bitset<6>(message.substr(0, 6));
+	if (high.all()) {
+		return message.substr(6);
+	}
+	else if (high.none()) {
+		return "";
+	}
+	else {
+		int len = static_cast<int>(high.to_ulong());
+		return message.substr(57 - len);
+	}
 }

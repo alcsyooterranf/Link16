@@ -83,3 +83,22 @@ bitset<5> ExtendWord::getBIP() {
 void ExtendWord::setBIP(bitset<5> BIP) {
 	m_BIP = BIP;
 }
+
+bitset<68> ExtendWord::getMessage() {
+	return m_message;
+}
+
+string ExtendWord::getData() {
+	string message = getMessage().to_string();
+	bitset<6> high = bitset<6>(message.substr(0, 6));
+	if (high.all()) {
+		return message.substr(6);
+	}
+	else if (high.none()) {
+		return "";
+	}
+	else {
+		int len = static_cast<int>(high.to_ulong());
+		return message.substr(68 - len);
+	}
+}

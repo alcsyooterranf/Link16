@@ -131,7 +131,6 @@
   <ItemGroup>
     <ClCompile Include="AES.cpp" />
     <ClCompile Include="ContinueWord.cpp" />
-    <ClCompile Include="decodeTools.cpp" />
     <ClCompile Include="ExtendWord.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="HeaderWord.cpp" />
@@ -140,14 +139,12 @@
     <ClCompile Include="Link16.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="STDPMsg.cpp" />
-    <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AES.h" />
     <ClInclude Include="ContinueWord.h" />
     <ClInclude Include="CRC.h" />
     <ClInclude Include="dataType.h" />
-    <ClInclude Include="decodeTools.h" />
     <ClInclude Include="ExtendWord.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="HeaderWord.h" />

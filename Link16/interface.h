@@ -5,5 +5,5 @@
 #include "decodeTools.h"
 #include "STDPMsg.h"
 
-int encoder_Link16(int m, int n, string& inputs);
-int decoder_Link16();
+int32_t encoder_Link16(int32_t n, int32_t m, string& inputs);
+int32_t decoder_Link16(string& raw_data, int32_t& n, int32_t& m);
